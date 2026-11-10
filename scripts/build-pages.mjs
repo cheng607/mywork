@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
@@ -26,13 +27,17 @@ const base = '/mywork';
 const read = (file) => fs.readFileSync(file, 'utf8');
 const write = (file, content) => fs.writeFileSync(file, content);
 
+const mainScript = path.join(dist, 'script.js');
+write(mainScript, read(mainScript).replace("frame.src = '/orbit-engine/index.html#image-orbit';", "frame.src = 'orbit-engine/index.html#image-orbit';"));
+
 const mainHtml = path.join(dist, 'index.html');
 let html = read(mainHtml);
 html = html.replace('<head>', '<head>\n  <base href="/mywork/">');
+for (const name of ['styles.css', 'script.js', 'mascot.js']) {
+  const version = createHash('sha256').update(fs.readFileSync(path.join(dist, name))).digest('hex').slice(0, 12);
+  html = html.replace(`"${name}"`, `"${name}?v=${version}"`);
+}
 write(mainHtml, html);
-
-const mainScript = path.join(dist, 'script.js');
-write(mainScript, read(mainScript).replace("frame.src = '/orbit-engine/index.html#image-orbit';", "frame.src = 'orbit-engine/index.html#image-orbit';"));
 
 const engineHtml = path.join(dist, 'orbit-engine', 'index.html');
 let orbitHtml = read(engineHtml);
