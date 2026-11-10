@@ -67,6 +67,7 @@
 .mascot-stage.action-present .mascot-figure{animation:mascot-present .7s ease both}
 .mascot-stage.action-think .mascot-figure{animation:mascot-think .8s ease both}
 .mascot-stage.action-idle .mascot-figure{animation:mascot-idle 4s ease-in-out infinite}
+.mascot-stage.has-model .mascot-figure{animation:none}
 @keyframes mascot-wave{0%,100%{transform:translateY(0) rotate(0)}35%{transform:translateY(-9px) rotate(-2deg)}70%{transform:translateY(-2px) rotate(2deg)}}
 @keyframes mascot-present{0%,100%{transform:translateX(0)}50%{transform:translateX(-8px) scale(1.025)}}
 @keyframes mascot-think{0%,100%{transform:translateY(0)}45%{transform:translateY(-6px) rotate(1deg)}}

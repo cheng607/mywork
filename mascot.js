@@ -32,6 +32,10 @@ if (stage && homeArt) {
   let rafId = 0;
   let lastFrameTime = 0;
   let modelLoaded = false;
+  let modelPivot = null;
+  let modelVisible = true;
+  let motionTime = 0;
+  let gestureStarted = 0;
 
   function say(text) {
     if (message && message.textContent !== text) message.textContent = text;
@@ -52,6 +56,7 @@ if (stage && homeArt) {
 
   function setAction(name, text) {
     currentAction = name;
+    gestureStarted = motionTime;
     stage.classList.remove('action-idle', 'action-wave', 'action-present', 'action-think');
     if (!prefersReducedMotion.matches) {
       void stage.offsetWidth;
@@ -140,6 +145,16 @@ if (stage && homeArt) {
     } else {
       stage.classList.add(`action-${currentAction}`);
     }
+    if (prefersReducedMotion.matches && modelPivot) {
+      modelPivot.rotation.set(0, 0, 0);
+      modelPivot.position.y = 0;
+      modelPivot.scale.set(1, 1, 1);
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = 0;
+      renderOnce();
+    } else {
+      startRenderLoop();
+    }
   });
 
   async function loadModel() {
@@ -163,15 +178,15 @@ if (stage && homeArt) {
 
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
-      camera.position.set(0, 1.65, 5.8);
-      camera.lookAt(0, 1.45, 0);
-      scene.add(new THREE.HemisphereLight(0xfff3dc, 0x51414d, 2.1));
+      camera.position.set(0, 1.55, 9.2);
+      camera.lookAt(0, 1.55, 0);
+      scene.add(new THREE.HemisphereLight(0xfff6e9, 0x9b9aa3, 2.0));
 
-      const keyLight = new THREE.DirectionalLight(0xffe8ce, 2.7);
+      const keyLight = new THREE.DirectionalLight(0xfff2e3, 1.35);
       keyLight.position.set(-3, 5, 5);
       scene.add(keyLight);
-      const fillLight = new THREE.DirectionalLight(0xffffff, 1.15);
-      fillLight.position.set(4, 2.5, -2);
+      const fillLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      fillLight.position.set(4, 3, 5);
       scene.add(fillLight);
 
       const loader = new GLTFLoader();
@@ -188,7 +203,17 @@ if (stage && homeArt) {
       const scale = size.y > 0 ? 3.1 / size.y : 1;
       model.scale.setScalar(scale);
       model.position.set(-center.x * scale, -bounds.min.y * scale, -center.z * scale);
-      scene.add(model);
+      model.traverse((object) => {
+        if (!object.isMesh || !object.material) return;
+        const materials = Array.isArray(object.material) ? object.material : [object.material];
+        materials.forEach((material) => {
+          if ('roughness' in material) material.roughness = Math.max(material.roughness, 0.72);
+          if ('metalness' in material) material.metalness = 0;
+        });
+      });
+      modelPivot = new THREE.Group();
+      modelPivot.add(model);
+      scene.add(modelPivot);
 
       if (gltf.animations.length) {
         mixer = new THREE.AnimationMixer(model);
@@ -225,6 +250,9 @@ if (stage && homeArt) {
     if (!rect.width || !rect.height) return;
     renderer.setSize(rect.width, rect.height, false);
     camera.aspect = rect.width / rect.height;
+    const halfFov = camera.fov * Math.PI / 360;
+    camera.position.z = Math.max(9.2, 1.1 / (Math.tan(halfFov) * camera.aspect) + 0.6);
+    camera.lookAt(0, 1.55, 0);
     camera.updateProjectionMatrix();
     renderOnce();
   }
@@ -235,16 +263,29 @@ if (stage && homeArt) {
 
   function renderFrame(time) {
     rafId = 0;
-    if (!modelLoaded || document.hidden || !mixer) return;
+    if (!modelLoaded || document.hidden || !modelVisible || prefersReducedMotion.matches) return;
+    if (lastFrameTime && time - lastFrameTime < 33) {
+      rafId = window.requestAnimationFrame(renderFrame);
+      return;
+    }
     const delta = lastFrameTime ? Math.min((time - lastFrameTime) / 1000, 0.05) : 0;
     lastFrameTime = time;
-    mixer.update(delta);
+    motionTime += delta;
+    mixer?.update(delta);
+    if (modelPivot) {
+      const gestureAge = motionTime - gestureStarted;
+      const gesture = gestureAge < 1.4 ? Math.sin(Math.PI * gestureAge / 1.4) : 0;
+      modelPivot.rotation.y = 0.045 * Math.sin(motionTime * 0.7) + gesture * (currentAction === 'present' ? -0.12 : 0.07);
+      modelPivot.rotation.z = 0.012 * Math.sin(motionTime * 1.1) + gesture * (currentAction === 'think' ? -0.035 : 0.02);
+      modelPivot.position.y = 0.012 * Math.sin(motionTime * 1.4);
+      modelPivot.scale.y = 1 + 0.004 * Math.sin(motionTime * 1.4);
+    }
     renderOnce();
     rafId = window.requestAnimationFrame(renderFrame);
   }
 
   function startRenderLoop() {
-    if (!rafId && mixer && !document.hidden) {
+    if (!rafId && modelLoaded && modelVisible && !document.hidden && !prefersReducedMotion.matches) {
       lastFrameTime = 0;
       rafId = window.requestAnimationFrame(renderFrame);
     }
@@ -253,6 +294,12 @@ if (stage && homeArt) {
   window.addEventListener('resize', resizeRenderer, { passive: true });
   const stageResizeObserver = new ResizeObserver(resizeRenderer);
   stageResizeObserver.observe(stage);
+  const stageVisibilityObserver = new IntersectionObserver((entries) => {
+    modelVisible = entries[0].isIntersecting;
+    if (modelVisible) startRenderLoop();
+    else if (rafId) { cancelAnimationFrame(rafId); rafId = 0; lastFrameTime = 0; }
+  });
+  stageVisibilityObserver.observe(stage);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       if (rafId) window.cancelAnimationFrame(rafId);
