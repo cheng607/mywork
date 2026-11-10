@@ -16,3 +16,18 @@
 /* Reference orbit: cards turn edge-on at the top and bottom of the ellipse */
 .orbit-card{width:clamp(112px,9vw,156px);height:clamp(74px,6.3vw,106px);transform:translate(calc(-50% + var(--x,0px)),calc(-50% + var(--y,0px))) rotate(var(--lean,0deg)) scaleX(var(--edge,1)) scale(var(--depth,1));transform-origin:center;overflow:hidden;border:1px solid #f8f4e6;box-shadow:0 8px 17px #1d263038}.orbit-card>img{object-position:var(--crop,50% 50%);object-fit:cover}.orbit-card>span{opacity:.78;font-size:clamp(10px,.8vw,13px);letter-spacing:.06em}.orbit-card:nth-child(4n + 1){filter:brightness(.72) saturate(.82)}.orbit-card:nth-child(4n + 2){filter:brightness(.9)}.orbit-card:nth-child(4n + 3){filter:brightness(1.02)}.orbit-center{width:min(400px,44%);height:clamp(190px,18vw,250px);min-height:0;display:block;background:none;border:0;box-shadow:none;overflow:visible;z-index:22}.center-preview{display:block;width:100%;height:100%;border:1px solid #77756c55;background:var(--paper);box-shadow:0 10px 28px #26231c25;overflow:hidden}.center-preview img{display:block;width:100%;height:100%;object-fit:contain}.orbit-controls{top:6%;left:2%}.orbit-controls .orbit-dot{width:22px;height:22px}@media(max-width:800px){.orbit-card{width:82px;height:58px}.orbit-center{width:48%;height:190px}}@media(max-width:480px){.orbit-card{width:62px;height:46px}.orbit-center{width:52%;height:150px}}
 .reference-orbit-frame{display:block;width:100%;height:clamp(680px,58vw,820px);border:0;background:#f3ede3}.work-section .section-top{margin-bottom:26px}.work-section{padding-bottom:60px}@media(max-width:700px){.reference-orbit-frame{height:660px}}
+
+/* Improve readability and make the live project destinations easy to find. */
+.about-content>p{font-size:17px;line-height:2.05}
+.about-side{font-size:12px;line-height:1.9}
+.skills span{font-size:12px;padding:7px 12px}
+.contact-foot{font-size:14px}
+.contact-foot a{font-size:11px}
+.footer>.mono{font-size:11px}
+.footer>.mono:last-child{font-size:10px}
+.project-live-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:20px}
+.project-live-links a{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:14px 18px;border:1px solid var(--line);color:var(--ink);text-decoration:none;transition:background .2s,border-color .2s}
+.project-live-links a:hover{background:#e9e5db;border-color:#b9b4a8}
+.project-live-links span{font:10px var(--mono);letter-spacing:.12em;color:var(--muted)}
+.project-live-links strong{font-size:14px;font-weight:600}
+@media(max-width:600px){.about-content>p{font-size:16px}.about-side{font-size:11px}.skills span{font-size:11px}.project-live-links{grid-template-columns:1fr;gap:10px}.project-live-links a{min-height:58px}.project-live-links strong{font-size:13px}.contact-foot{font-size:13px}}
