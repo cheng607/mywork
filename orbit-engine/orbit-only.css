@@ -1,0 +1,9 @@
+html, body, #root { width: 100%; height: 100%; min-height: 0; margin: 0; overflow: hidden !important; }
+body.orbit-only { background: #f3ede3; }
+body.orbit-only header, body.orbit-only footer, body.orbit-only .screen:not(.image-orbit-section), body.orbit-only .skip-link, body.orbit-only .chat-widget, body.orbit-only .scroll-progress { display: none !important; }
+body.orbit-only #root, body.orbit-only #root > * { width: 100%; height: 100%; min-height: 0; overflow: hidden; }
+body.orbit-only .image-orbit-section { display: flex !important; position: relative !important; inset: auto !important; box-sizing: border-box; width: 100%; height: 100vh; min-height: 560px; margin: 0 !important; padding: 18px 3.2vw 0 !important; overflow: hidden !important; }
+body.orbit-only .orbit-stage { position: absolute; inset: 62px 0 0 !important; height: auto !important; min-height: 0 !important; overflow: visible !important; }
+body.orbit-only .orbit-masthead { position: relative; z-index: 3; flex: 0 0 42px; }
+body.orbit-only .orbit-topics { pointer-events: none; }
+body.orbit-only header, body.orbit-only footer, body.orbit-only .screen:not(.image-orbit-section), body.orbit-only .skip-link, body.orbit-only .chat-widget, body.orbit-only .scroll-progress { display: none !important; }
