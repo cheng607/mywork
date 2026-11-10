@@ -33,6 +33,10 @@ write(mainScript, read(mainScript).replace("frame.src = '/orbit-engine/index.htm
 const mainHtml = path.join(dist, 'index.html');
 let html = read(mainHtml);
 html = html.replace('<head>', '<head>\n  <base href="/mywork/">');
+const modelPath = path.join(dist, 'assets', 'models', 'cheng607-mascot.glb');
+if (fs.existsSync(modelPath)) {
+  html = html.replace(/data-glb-bytes="\d+"/, `data-glb-bytes="${fs.statSync(modelPath).size}"`);
+}
 for (const name of ['styles.css', 'script.js', 'mascot.js']) {
   const version = createHash('sha256').update(fs.readFileSync(path.join(dist, name))).digest('hex').slice(0, 12);
   html = html.replace(`"${name}"`, `"${name}?v=${version}"`);

@@ -190,10 +190,17 @@ if (stage && homeArt) {
       scene.add(fillLight);
 
       const loader = new GLTFLoader();
+      const modelBytes = Number(stage.dataset.glbBytes);
       const gltf = await loader.loadAsync(absoluteModelUrl.href, (event) => {
         if (loading && event.loaded > 0) {
-          const receivedMb = (event.loaded / (1024 * 1024)).toFixed(1);
-          loading.textContent = `正在加载 3D 角色… 已接收 ${receivedMb} MB`;
+          if (Number.isFinite(modelBytes) && modelBytes > 0) {
+            const percent = Math.min(100, Math.floor(event.loaded / modelBytes * 100));
+            loading.textContent = percent >= 100
+              ? '模型已下载，正在解析…'
+              : `正在下载 3D 角色… ${percent}%`;
+          } else {
+            loading.textContent = `正在加载 3D 角色… 已接收 ${(event.loaded / (1024 * 1024)).toFixed(1)} MB`;
+          }
         }
       });
       const model = gltf.scene;
