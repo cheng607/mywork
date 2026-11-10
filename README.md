@@ -25,4 +25,6 @@ node scripts/build-pages.mjs
 
 将经过优化的角色模型放到 `assets/models/cheng607-mascot.glb`。可选的动画片段名建议包含 `idle`、`wave`、`point` 或 `think`；构建脚本会将模型目录复制到 GitHub Pages 发布目录。将模型加入公开站点前，请确认许可和署名要求。
 
+当前模型由腾讯混元 3D 根据角色概念图生成，约 82 MB，尚未绑定骨骼或包含动画；页面动作目前通过整体的轻微位移呈现。
+
 项目截图位于 `assets/`，漫游数据位于 `orbit-engine/content.json`。
