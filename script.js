@@ -11,6 +11,7 @@ frame.addEventListener('load', () => {
       'project-blog': ['https://www.raincode.top/', '打开个人博客 ↗'],
       'project-tripbeam': ['https://www.raincode.top/tripBeam/', '打开 TripBeam ↗'],
     };
+    let lastSelectedProject = '';
     const mountProjectLink = () => {
       const preview = frameDoc.querySelector('figure.orbit-preview[data-image-id]');
       if (!preview) return;
@@ -33,6 +34,12 @@ frame.addEventListener('load', () => {
       if (project) {
         if (link.href !== project[1][0]) link.href = project[1][0];
         if (link.textContent !== project[1][1]) link.textContent = project[1][1];
+        if (lastSelectedProject !== project[0]) {
+          lastSelectedProject = project[0];
+          window.dispatchEvent(new CustomEvent('portfolio:project-selection', {
+            detail: { slug: project[0] },
+          }));
+        }
       }
     };
     new MutationObserver(mountProjectLink).observe(frameDoc.body, {

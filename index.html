@@ -20,17 +20,34 @@
   </header>
 
   <main id="home">
-    <section class="hero wrap">
+    <section class="hero wrap" data-mascot-section="home">
       <div class="hero-copy">
         <div class="eyebrow"><span class="pulse"></span> 独立开发者 & AI 产品实践 <span class="mono">/ 2026</span></div>
         <h1>用代码<br>把想法<span class="outline">做出来</span><i>。</i></h1>
         <div class="hero-bottom"><p>你好，我是 cheng607。<br>记录博客与 TripBeam，也继续尝试 AI 应用和 Web 产品。</p><a class="circle-link" href="#work" aria-label="浏览作品">↓</a><span class="hero-index mono">当前项目<br>01 — 02</span></div>
       </div>
-      <div class="hero-art" aria-label="抽象的橙色立体装置艺术"><div class="art-grid"></div><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="art-ring"></div><div class="art-block"></div><span class="art-label mono">IDEAS<br>INTO FORM<br>EST. 2025</span><span class="art-cross">✳</span><span class="art-coordinate mono">31°13' N<br>121°28' E</span></div>
+      <div class="hero-art mascot-home-art" aria-label="cheng607 的 3D 卡通角色舞台">
+        <div class="art-grid"></div>
+        <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="art-ring"></div><div class="art-block"></div>
+        <span class="art-label mono">IDEAS<br>INTO FORM<br>EST. 2025</span><span class="art-cross">✳</span><span class="art-coordinate mono">31°13' N<br>121°28' E</span>
+        <aside class="mascot-stage" id="mascot-stage" data-mascot-stage data-glb-src="assets/models/cheng607-mascot.glb" aria-label="作品集角色向导">
+          <button class="mascot-figure" type="button" data-mascot-replay aria-label="重播角色动作">
+            <img class="mascot-poster" src="assets/cheng607-mascot-poster.png" alt="日系潮玩风的 cheng607 卡通角色，身穿白色上衣、深蓝长裤和白鞋" width="1024" height="1536" />
+            <canvas class="mascot-canvas" data-mascot-canvas aria-hidden="true"></canvas>
+          </button>
+          <div class="mascot-caption">
+            <span class="mascot-kicker mono">PORTFOLIO GUIDE</span>
+            <p class="mascot-message" data-mascot-message aria-live="polite">你好，我是 Cheng。来看看我做的项目吧。</p>
+            <button class="mascot-replay" type="button" data-mascot-replay>↻ 再看一次</button>
+            <a class="mascot-credit" href="https://www.meshy.ai/" target="_blank" rel="noopener noreferrer">Model created with Meshy – CC BY 4.0 License.</a>
+          </div>
+          <button class="mascot-minimize" type="button" data-mascot-minimize aria-label="收起角色助手" aria-expanded="true">−</button>
+        </aside>
+      </div>
       <div class="hero-ticker"><div>SELECTED WORK <b>✳</b> DESIGN WITH INTENT <b>✳</b> BUILD WITH CURIOSITY <b>✳</b> SELECTED WORK <b>✳</b> DESIGN WITH INTENT <b>✳</b> BUILD WITH CURIOSITY <b>✳</b></div></div>
     </section>
 
-    <section class="work-section wrap" id="work">
+    <section class="work-section wrap" id="work" data-mascot-section="work">
       <div class="section-top"><div><span class="eyebrow mono">01 / SELECTED WORK</span><h2>项目漫游<span> / SELECTED WORK</span></h2></div><p>博客与 TripBeam 是这里展示的两个项目。</p></div>
       <div class="filters" role="group" aria-label="筛选项目"><button class="filter active" data-filter="all">全部 <span>06</span></button><button class="filter" data-filter="product">产品</button><button class="filter" data-filter="ai">AI / Agent</button><button class="filter" data-filter="data">数据</button><button class="filter" data-filter="web">Web</button><button class="filter" data-filter="web">网页开发</button></div>
       <div class="project-grid" id="project-grid"></div>
@@ -41,13 +58,17 @@
       <div class="more-note mono">MORE GOOD THINGS ARE ON THE WAY <span>↘</span></div>
     </section>
 
-    <section class="about-section" id="about"><div class="wrap about-inner"><div class="about-stamp">ABOUT<br>✳<br>ME</div><div class="about-content"><span class="eyebrow mono">02 / A LITTLE INTRODUCTION</span><h2>保持好奇，<br>保持<span>动手。</span></h2><p>我喜欢把想法做成能运行的东西。从个人博客、旅行规划到 AI 助手和数据聚合项目，持续练习产品思考、快速实现与迭代。</p><div class="skills"><span>JavaScript</span><span>TypeScript</span><span>Python</span><span>Vue</span><span>AI 应用</span></div></div><div class="about-side mono"><span>OPEN SOURCE<br>GITHUB.COM/CHENG607</span><span>FOCUS ON<br>AI · WEB · PRODUCT</span><a class="availability" href="https://github.com/cheng607" target="_blank" rel="noopener noreferrer">查看 GitHub ↗</a></div></div></section>
+    <section class="about-section" id="about" data-mascot-section="about"><div class="wrap about-inner"><div class="about-stamp">ABOUT<br>✳<br>ME</div><div class="about-content"><span class="eyebrow mono">02 / A LITTLE INTRODUCTION</span><h2>保持好奇，<br>保持<span>动手。</span></h2><p>我喜欢把想法做成能运行的东西。从个人博客、旅行规划到 AI 助手和数据聚合项目，持续练习产品思考、快速实现与迭代。</p><div class="skills"><span>JavaScript</span><span>TypeScript</span><span>Python</span><span>Vue</span><span>AI 应用</span></div></div><div class="about-side mono"><span>OPEN SOURCE<br>GITHUB.COM/CHENG607</span><span>FOCUS ON<br>AI · WEB · PRODUCT</span><a class="availability" href="https://github.com/cheng607" target="_blank" rel="noopener noreferrer">查看 GitHub ↗</a></div></div></section>
 
-    <section class="contact-section wrap" id="contact"><span class="eyebrow mono">03 / YOUR TURN</span><div class="contact-row"><h2>有个好点子？<br><span>我们聊聊。</span></h2><a class="contact-button" href="https://github.com/cheng607" aria-label="查看 GitHub">↗</a></div><div class="contact-foot"><span>更多项目与代码可以在 GitHub 查看。</span><div><a href="https://github.com/cheng607">GITHUB ↗</a><a href="#home">BACK TO TOP ↑</a></div></div></section>
+    <section class="contact-section wrap" id="contact" data-mascot-section="contact"><span class="eyebrow mono">03 / YOUR TURN</span><div class="contact-row"><h2>有个好点子？<br><span>我们聊聊。</span></h2><a class="contact-button" href="https://github.com/cheng607" aria-label="查看 GitHub">↗</a></div><div class="contact-foot"><span>更多项目与代码可以在 GitHub 查看。</span><div><a href="https://github.com/cheng607">GITHUB ↗</a><a href="#home">BACK TO TOP ↑</a></div></div></section>
   </main>
   <footer class="footer"><a class="brand" href="#home"><span class="brand-mark">C<span>+</span></span><span class="brand-caption">CHENG607<br>BUILD & LEARN</span></a><span class="mono">持续构建，持续学习。 © 2026</span><span class="mono">GITHUB.COM/CHENG607 ↗</span></footer>
 
   <dialog class="project-dialog" id="project-dialog"><button class="dialog-close" aria-label="关闭详情">×</button><div class="dialog-art"></div><span class="eyebrow mono dialog-meta"></span><h2 class="dialog-title"></h2><p class="dialog-description"></p><div class="dialog-tags"></div><div class="dialog-foot mono">项目细节可继续补充</div></dialog>
   <script src="script.js"></script>
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/"}}
+  </script>
+  <script type="module" src="mascot.js"></script>
 </body>
 </html>
