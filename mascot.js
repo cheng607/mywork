@@ -176,8 +176,9 @@ if (stage && homeArt) {
 
       const loader = new GLTFLoader();
       const gltf = await loader.loadAsync(absoluteModelUrl.href, (event) => {
-        if (loading && event.lengthComputable && event.total) {
-          loading.textContent = `正在加载 3D 角色… ${Math.round(event.loaded / event.total * 100)}%`;
+        if (loading && event.loaded > 0) {
+          const receivedMb = (event.loaded / (1024 * 1024)).toFixed(1);
+          loading.textContent = `正在加载 3D 角色… 已接收 ${receivedMb} MB`;
         }
       });
       const model = gltf.scene;
