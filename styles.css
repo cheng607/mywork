@@ -39,6 +39,8 @@
 .mascot-figure{position:absolute;right:3%;top:2%;width:76%;height:94%;padding:0;border:0;background:transparent;cursor:pointer;pointer-events:auto;display:grid;place-items:center;transform-origin:50% 85%;}
 .mascot-poster,.mascot-canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 16px 12px #4b332637)}
 .mascot-canvas{display:none}
+.mascot-loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:80%;text-align:center;color:#55554d;font:12px/1.6 var(--sans)}
+.mascot-stage.has-model .mascot-loading{display:none}
 .mascot-stage.has-model .mascot-poster{display:none}
 .mascot-stage.has-model .mascot-canvas{display:block}
 .mascot-figure:focus-visible,.mascot-replay:focus-visible,.mascot-minimize:focus-visible{outline:3px solid var(--blue);outline-offset:4px}

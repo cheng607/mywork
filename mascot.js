@@ -2,7 +2,7 @@ const stage = document.querySelector('[data-mascot-stage]');
 const homeArt = document.querySelector('.mascot-home-art');
 
 if (stage && homeArt) {
-  const poster = stage.querySelector('.mascot-poster');
+  const loading = stage.querySelector('[data-mascot-loading]');
   const canvas = stage.querySelector('[data-mascot-canvas]');
   const message = stage.querySelector('[data-mascot-message]');
   const minimizeButton = stage.querySelector('[data-mascot-minimize]');
@@ -149,7 +149,7 @@ if (stage && homeArt) {
     try {
       const absoluteModelUrl = new URL(modelUrl, document.baseURI);
       const head = await fetch(absoluteModelUrl, { method: 'HEAD' });
-      if (!head.ok) return;
+      if (!head.ok) throw new Error(`Model request failed: ${head.status}`);
 
       const [THREE, { GLTFLoader }] = await Promise.all([
         import('three'),
@@ -175,7 +175,11 @@ if (stage && homeArt) {
       scene.add(fillLight);
 
       const loader = new GLTFLoader();
-      const gltf = await loader.loadAsync(absoluteModelUrl.href);
+      const gltf = await loader.loadAsync(absoluteModelUrl.href, (event) => {
+        if (loading && event.lengthComputable && event.total) {
+          loading.textContent = `正在加载 3D 角色… ${Math.round(event.loaded / event.total * 100)}%`;
+        }
+      });
       const model = gltf.scene;
       const bounds = new THREE.Box3().setFromObject(model);
       const size = bounds.getSize(new THREE.Vector3());
@@ -202,12 +206,12 @@ if (stage && homeArt) {
 
       modelLoaded = true;
       stage.classList.add('has-model');
-      poster?.setAttribute('aria-hidden', 'true');
       resizeRenderer();
       renderOnce();
       startRenderLoop();
     } catch (error) {
-      console.info('3D 角色文件尚未配置，继续显示轻量静态角色。', error);
+      console.error('3D 角色加载失败。', error);
+      if (loading) loading.textContent = '3D 角色加载失败，请刷新页面重试。';
       renderer?.dispose();
       renderer = null;
       stage.classList.remove('has-model');
