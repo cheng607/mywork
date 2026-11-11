@@ -170,9 +170,10 @@ if (stage && homeArt) {
       const head = await fetch(absoluteModelUrl, { method: 'HEAD' });
       if (!head.ok) throw new Error(`Model request failed: ${head.status}`);
 
-      const [THREE, { GLTFLoader }] = await Promise.all([
+      const [THREE, { GLTFLoader }, { DRACOLoader }] = await Promise.all([
         import('three'),
         import('three/addons/loaders/GLTFLoader.js'),
+        import('three/addons/loaders/DRACOLoader.js'),
       ]);
 
       renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
@@ -194,6 +195,9 @@ if (stage && homeArt) {
       scene.add(fillLight);
 
       const loader = new GLTFLoader();
+      const dracoLoader = new DRACOLoader();
+      dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/libs/draco/');
+      loader.setDRACOLoader(dracoLoader);
       const modelBytes = Number(stage.dataset.glbBytes);
       const gltf = await loader.loadAsync(absoluteModelUrl.href, (event) => {
         if (loading && event.loaded > 0) {
@@ -207,6 +211,7 @@ if (stage && homeArt) {
           }
         }
       });
+      dracoLoader.dispose();
       const model = gltf.scene;
       const bounds = new THREE.Box3().setFromObject(model);
       const size = bounds.getSize(new THREE.Vector3());

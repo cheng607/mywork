@@ -25,6 +25,6 @@ node scripts/build-pages.mjs
 
 将经过优化的角色模型放到 `assets/models/cheng607-mascot.glb`。可选的动画片段名建议包含 `idle`、`wave`、`point` 或 `think`；构建脚本会将模型目录复制到 GitHub Pages 发布目录。将模型加入公开站点前，请确认许可和署名要求。
 
-当前模型由腾讯混元 3D 根据角色概念图生成，并借助 Mixamo 自动绑骨。模型包含待机动画，页面通过骨骼实现招手与展示动作。模型约 100 MB；当前不包含面部表情动画。
+当前模型由腾讯混元 3D 根据角色概念图生成，并借助 Mixamo 自动绑骨。模型包含待机动画，页面通过骨骼实现招手与展示动作。模型经 Draco 压缩后约 42 MB；当前不包含面部表情动画。
 
 项目截图位于 `assets/`，漫游数据位于 `orbit-engine/content.json`。
