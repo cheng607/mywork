@@ -51,8 +51,15 @@ if (stage && homeArt) {
   let waveForeArm = null;
   let THREEEngine = null;
   let activeScene = savedScene;
-  let sceneOffset = activeScene === 'home' ? 0 : -0.95;
+  const sceneLayout = (name) => name === 'gaming'
+    ? { y: -0.4, scale: 0.84 }
+    : name === 'dining'
+      ? { y: -0.95, scale: 1 }
+      : { y: 0, scale: 1 };
+  let sceneOffset = sceneLayout(activeScene).y;
   let sceneOffsetTarget = sceneOffset;
+  let sceneScale = sceneLayout(activeScene).scale;
+  let sceneScaleTarget = sceneScale;
   let sceneTransitionAction = null;
   let proceduralBoneBases = new Map();
 
@@ -66,9 +73,17 @@ if (stage && homeArt) {
     if (!scenePrompts[name] || name === activeScene) return;
     const previousScene = activeScene;
     activeScene = name;
-    sceneOffsetTarget = name === 'home' ? 0 : -0.95;
-    if (prefersReducedMotion.matches) sceneOffset = sceneOffsetTarget;
-    if (prefersReducedMotion.matches && modelPivot) modelPivot.position.y = sceneOffset;
+    const layout = sceneLayout(name);
+    sceneOffsetTarget = layout.y;
+    sceneScaleTarget = layout.scale;
+    if (prefersReducedMotion.matches) {
+      sceneOffset = sceneOffsetTarget;
+      sceneScale = sceneScaleTarget;
+    }
+    if (prefersReducedMotion.matches && modelPivot) {
+      modelPivot.position.y = sceneOffset;
+      modelPivot.scale.setScalar(sceneScale);
+    }
     try { localStorage.setItem(sceneStorageKey, name); } catch { /* Storage can be unavailable in private contexts. */ }
     stage.dataset.mascotScene = name;
     stage.querySelectorAll('[data-scene-select]').forEach((button) => {
@@ -236,22 +251,6 @@ if (stage && homeArt) {
     });
   }
 
-  function restartCurrentAction() {
-    if (activeScene !== 'home') {
-      setAction('idle', scenePrompts[activeScene].text);
-      return;
-    }
-    const prompt = sectionPrompts[activeSection] || sectionPrompts.home;
-    const text = activeSection === 'work' && projectPrompts[lastProject]
-      ? projectPrompts[lastProject]
-      : prompt.text;
-    setAction(prompt.action, text);
-  }
-
-  stage.querySelectorAll('[data-mascot-replay]').forEach((button) => {
-    button.addEventListener('click', restartCurrentAction);
-  });
-
   stage.querySelectorAll('[data-scene-select]').forEach((button) => {
     button.setAttribute('aria-pressed', String(button.dataset.sceneSelect === activeScene));
     button.addEventListener('click', () => selectScene(button.dataset.sceneSelect));
@@ -286,10 +285,13 @@ if (stage && homeArt) {
     }
     if (prefersReducedMotion.matches && modelPivot) {
       modelPivot.rotation.set(0, 0, 0);
-      sceneOffset = activeScene === 'home' ? 0 : -0.95;
+      const layout = sceneLayout(activeScene);
+      sceneOffset = layout.y;
       sceneOffsetTarget = sceneOffset;
+      sceneScale = layout.scale;
+      sceneScaleTarget = sceneScale;
       modelPivot.position.y = sceneOffset;
-      modelPivot.scale.set(1, 1, 1);
+      modelPivot.scale.setScalar(sceneScale);
       if (rafId) cancelAnimationFrame(rafId);
       rafId = 0;
       renderOnce();
@@ -368,6 +370,7 @@ if (stage && homeArt) {
       modelPivot = new THREE.Group();
       modelPivot.add(model);
       modelPivot.position.y = sceneOffset;
+      modelPivot.scale.setScalar(sceneScale);
       scene.add(modelPivot);
       model.traverse((object) => {
         if (!object.isBone) return;
@@ -458,8 +461,9 @@ if (stage && homeArt) {
       modelPivot.rotation.y = 0.045 * Math.sin(motionTime * 0.7) + gesture * (currentAction === 'present' ? -0.12 : 0.07);
       modelPivot.rotation.z = 0.012 * Math.sin(motionTime * 1.1) + gesture * (currentAction === 'think' ? -0.035 : 0.02);
       sceneOffset += (sceneOffsetTarget - sceneOffset) * Math.min(1, delta / 0.5);
+      sceneScale += (sceneScaleTarget - sceneScale) * Math.min(1, delta / 0.5);
       modelPivot.position.y = sceneOffset + 0.012 * Math.sin(motionTime * 1.4);
-      modelPivot.scale.y = 1 + 0.004 * Math.sin(motionTime * 1.4);
+      modelPivot.scale.set(sceneScale, sceneScale * (1 + 0.004 * Math.sin(motionTime * 1.4)), sceneScale);
     }
     renderOnce();
     rafId = window.requestAnimationFrame(renderFrame);
