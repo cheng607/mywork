@@ -53,22 +53,24 @@
 .mascot-stage.has-model .mascot-poster{display:none}
 .mascot-stage.has-model .mascot-canvas{display:block}
 .mascot-figure:focus-visible,.mascot-replay:focus-visible,.mascot-minimize:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
-.mascot-caption{position:absolute;left:22px;bottom:23px;width:min(225px,48%);padding:13px 15px 12px;background:#f4f1e9eF;border:1px solid #17181424;box-shadow:0 8px 22px #2a29201a;pointer-events:auto;z-index:5}
+.mascot-caption{position:absolute;left:22px;bottom:23px;width:min(245px,50%);padding:13px 16px 12px;background:#fffaf2f2;border:1px solid #17181420;border-radius:16px 16px 16px 5px;box-shadow:0 10px 26px #2a29201c;pointer-events:auto;z-index:5}
+.mascot-caption::before{content:"";position:absolute;right:30px;top:-11px;width:18px;height:16px;background:#fffaf2f2;clip-path:polygon(0 100%,100% 0,80% 100%);filter:drop-shadow(0 -1px 0 #17181420)}
 .mascot-scenes{position:absolute;top:16px;left:16px;z-index:6;display:flex;align-items:center;gap:5px;padding:5px;background:#f4f1e9eF;border:1px solid #17181424;box-shadow:0 5px 16px #2a292014;pointer-events:auto}
 .mascot-scenes-label{padding:0 5px;color:var(--muted);font:9px var(--mono)}
 .mascot-scenes button{min-height:30px;padding:0 9px;border:1px solid transparent;background:transparent;color:#62635d;font:11px var(--sans);cursor:pointer;white-space:nowrap}
 .mascot-scenes button:hover{background:#e9e5db;color:var(--ink)}
 .mascot-scenes button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .mascot-scenes button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
-.mascot-kicker{font-size:8px;letter-spacing:.12em;color:var(--muted)}
-.mascot-message{font-size:12px;line-height:1.65;margin:7px 0 8px;color:#40413b}
+.mascot-kicker{display:none}
+.mascot-message{font-size:13px;line-height:1.65;margin:0 0 8px;color:#40413b}
 .mascot-replay{border:0;background:none;padding:0;color:var(--blue);font:11px var(--sans);cursor:pointer}
 .mascot-credit{display:none;margin-top:8px;color:#73746b;font:8px/1.4 var(--mono);text-decoration:underline;text-underline-offset:2px}
 .mascot-stage.has-model .mascot-credit{display:block}
 .mascot-minimize{position:absolute;top:15px;right:15px;z-index:6;width:28px;height:28px;border:1px solid #17181448;border-radius:50%;background:#f4f1e9d9;color:var(--ink);font-size:18px;line-height:1;cursor:pointer;pointer-events:auto}
 .mascot-stage.is-docked{position:fixed;inset:auto 22px 22px auto;width:220px;height:250px;z-index:8;background:#f4f1e9f2;border:1px solid #1718142c;box-shadow:0 12px 32px #17181426;backdrop-filter:blur(8px);transition:width .35s ease,height .35s ease,background .25s ease,box-shadow .25s ease}
 .mascot-stage.is-docked .mascot-figure{right:2%;top:48%;width:66%;height:50%}
-.mascot-stage.is-docked .mascot-caption{left:12px;top:12px;bottom:auto;width:calc(100% - 45px);padding:9px 10px;background:#fffaf2;border-color:#17181418;box-shadow:none}
+.mascot-stage.is-docked .mascot-caption{left:12px;top:12px;bottom:auto;width:calc(100% - 45px);padding:9px 10px;background:#fffaf2f2;border-color:#17181418;box-shadow:0 5px 12px #2a292014}
+.mascot-stage.is-docked .mascot-caption::before{top:28px;right:-11px;bottom:auto;width:18px;height:20px;clip-path:polygon(0 0,100% 50%,0 100%);filter:drop-shadow(1px 0 0 #17181420)}
 .mascot-stage.is-docked .mascot-message{font-size:11px;margin:5px 0 6px}
 .mascot-stage.is-docked .mascot-kicker{font-size:7px}
 .mascot-stage.is-docked .mascot-scenes{top:102px;left:8px;right:8px;justify-content:center;gap:2px;padding:3px}
@@ -93,5 +95,5 @@
 @keyframes mascot-present{0%,100%{transform:translateX(0)}50%{transform:translateX(-8px) scale(1.025)}}
 @keyframes mascot-think{0%,100%{transform:translateY(0)}45%{transform:translateY(-6px) rotate(1deg)}}
 @keyframes mascot-idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@media(max-width:700px){.mascot-figure{right:0;width:82%}.mascot-caption{left:12px;bottom:12px;width:53%;padding:9px 10px}.mascot-message{font-size:10px;margin:5px 0 6px}.mascot-kicker{font-size:7px}.mascot-scenes{top:10px;left:10px;gap:2px;padding:3px}.mascot-scenes-label{display:none}.mascot-scenes button{min-height:28px;padding:0 7px;font-size:10px}.mascot-stage.is-docked{inset:auto 12px 12px auto;width:174px;height:210px}.mascot-stage.is-docked .mascot-figure{top:50%;width:74%;height:48%}.mascot-stage.is-docked .mascot-scenes{top:100px;left:5px;right:5px;padding:2px}.mascot-stage.is-docked .mascot-scenes button{padding:0 6px;font-size:9px}.mascot-stage.is-minimized{width:78px;height:96px}}
+@media(max-width:700px){.mascot-figure{right:0;width:82%}.mascot-caption{left:12px;bottom:12px;width:58%;padding:9px 10px}.mascot-message{font-size:11px;margin:0 0 6px}.mascot-scenes{top:10px;left:10px;gap:2px;padding:3px}.mascot-scenes-label{display:none}.mascot-scenes button{min-height:28px;padding:0 7px;font-size:10px}.mascot-stage.is-docked{inset:auto 12px 12px auto;width:174px;height:210px}.mascot-stage.is-docked .mascot-figure{top:50%;width:74%;height:48%}.mascot-stage.is-docked .mascot-scenes{top:100px;left:5px;right:5px;padding:2px}.mascot-stage.is-docked .mascot-scenes button{padding:0 6px;font-size:9px}.mascot-stage.is-minimized{width:78px;height:96px}}
 @media(prefers-reduced-motion:reduce){.mascot-stage,.mascot-stage *,.mascot-home-art,.scene-backdrops img,.scene-foregrounds img{scroll-behavior:auto!important;transition:none!important;animation:none!important}}

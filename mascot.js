@@ -51,6 +51,8 @@ if (stage && homeArt) {
   let waveForeArm = null;
   let THREEEngine = null;
   let activeScene = savedScene;
+  let sceneOffset = activeScene === 'home' ? 0 : -0.95;
+  let sceneOffsetTarget = sceneOffset;
   let sceneTransitionAction = null;
   let proceduralBoneBases = new Map();
 
@@ -64,6 +66,9 @@ if (stage && homeArt) {
     if (!scenePrompts[name] || name === activeScene) return;
     const previousScene = activeScene;
     activeScene = name;
+    sceneOffsetTarget = name === 'home' ? 0 : -0.95;
+    if (prefersReducedMotion.matches) sceneOffset = sceneOffsetTarget;
+    if (prefersReducedMotion.matches && modelPivot) modelPivot.position.y = sceneOffset;
     try { localStorage.setItem(sceneStorageKey, name); } catch { /* Storage can be unavailable in private contexts. */ }
     stage.dataset.mascotScene = name;
     stage.querySelectorAll('[data-scene-select]').forEach((button) => {
@@ -281,7 +286,9 @@ if (stage && homeArt) {
     }
     if (prefersReducedMotion.matches && modelPivot) {
       modelPivot.rotation.set(0, 0, 0);
-      modelPivot.position.y = 0;
+      sceneOffset = activeScene === 'home' ? 0 : -0.95;
+      sceneOffsetTarget = sceneOffset;
+      modelPivot.position.y = sceneOffset;
       modelPivot.scale.set(1, 1, 1);
       if (rafId) cancelAnimationFrame(rafId);
       rafId = 0;
@@ -360,6 +367,7 @@ if (stage && homeArt) {
       });
       modelPivot = new THREE.Group();
       modelPivot.add(model);
+      modelPivot.position.y = sceneOffset;
       scene.add(modelPivot);
       model.traverse((object) => {
         if (!object.isBone) return;
@@ -449,7 +457,8 @@ if (stage && homeArt) {
       const gesture = gestureAge < 1.4 ? Math.sin(Math.PI * gestureAge / 1.4) : 0;
       modelPivot.rotation.y = 0.045 * Math.sin(motionTime * 0.7) + gesture * (currentAction === 'present' ? -0.12 : 0.07);
       modelPivot.rotation.z = 0.012 * Math.sin(motionTime * 1.1) + gesture * (currentAction === 'think' ? -0.035 : 0.02);
-      modelPivot.position.y = 0.012 * Math.sin(motionTime * 1.4);
+      sceneOffset += (sceneOffsetTarget - sceneOffset) * Math.min(1, delta / 0.5);
+      modelPivot.position.y = sceneOffset + 0.012 * Math.sin(motionTime * 1.4);
       modelPivot.scale.y = 1 + 0.004 * Math.sin(motionTime * 1.4);
     }
     renderOnce();

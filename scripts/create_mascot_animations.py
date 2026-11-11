@@ -153,8 +153,8 @@ def pose_values(kind, t):
         values = {
             "Hips": (0.05 * progress, 0, 0),
             "Spine": (-0.06 * progress, 0, 0), "Spine1": (-0.035 * progress, 0, 0),
-            "LeftUpLeg": (-0.92 * progress, 0, 0), "RightUpLeg": (-0.92 * progress, 0, 0),
-            "LeftLeg": (1.42 * progress, 0, 0), "RightLeg": (1.42 * progress, 0, 0),
+            "LeftUpLeg": (-0.52 * progress, 0, 0), "RightUpLeg": (-0.52 * progress, 0, 0),
+            "LeftLeg": (0.82 * progress, 0, 0), "RightLeg": (0.82 * progress, 0, 0),
             "LeftArm": (-0.26 * progress, 0, -0.035 * progress),
             "RightArm": (-0.3 * progress, 0, 0.035 * progress),
             "LeftForeArm": (0.42 * progress, 0, 0), "RightForeArm": (0.48 * progress, 0, 0),
@@ -168,10 +168,10 @@ def pose_values(kind, t):
             "Neck": (cycle * 0.018, 0, 0), "Head": (-cycle * 0.012, 0, 0),
             "LeftUpLeg": (-0.92, 0, 0), "RightUpLeg": (-0.92, 0, 0),
             "LeftLeg": (1.42, 0, 0), "RightLeg": (1.42, 0, 0),
-            "LeftArm": (-0.34 - cycle * 0.035, 0, -0.035),
-            "RightArm": (-0.38 + cycle * 0.04, 0, 0.035),
-            "LeftForeArm": (0.5 + cycle * 0.08, 0, 0),
-            "RightForeArm": (0.58 - cycle * 0.1, 0, 0),
+            "LeftArm": (-0.5 - cycle * 0.04, 0, -0.035),
+            "RightArm": (-0.55 + cycle * 0.045, 0, 0.035),
+            "LeftForeArm": (0.7 + cycle * 0.08, 0, 0),
+            "RightForeArm": (0.76 - cycle * 0.1, 0, 0),
         }
     # Dining: lift the right hand for each bite; the left hand rests near the bowl.
     bite = (1 - math.cos(2 * math.pi * t)) * 0.5
@@ -179,10 +179,10 @@ def pose_values(kind, t):
         "Hips": (0.04, 0, 0), "Spine": (-0.08, 0, 0), "Spine1": (-0.04, 0, 0),
         "Spine2": (-0.025 - bite * 0.035, 0, 0),
         "Neck": (-bite * 0.075, 0, 0), "Head": (bite * 0.035, 0, 0),
-        "LeftUpLeg": (-0.92, 0, 0), "RightUpLeg": (-0.92, 0, 0),
-        "LeftLeg": (1.42, 0, 0), "RightLeg": (1.42, 0, 0),
-        "LeftArm": (-0.27, 0, -0.04), "RightArm": (-0.13 - bite * 0.27, 0, 0.04),
-        "LeftForeArm": (0.38, 0, 0), "RightForeArm": (0.16 + bite * 0.42, 0, 0),
+        "LeftUpLeg": (-0.52, 0, 0), "RightUpLeg": (-0.52, 0, 0),
+        "LeftLeg": (0.82, 0, 0), "RightLeg": (0.82, 0, 0),
+        "LeftArm": (-0.32, 0, -0.04), "RightArm": (-1.05 - bite * 0.45, 0, 0.04),
+        "LeftForeArm": (0.46, 0, 0), "RightForeArm": (-0.35 - bite * 0.8, 0, 0),
         "RightHand": (-0.15 - bite * 0.12, 0, 0),
     }
 
