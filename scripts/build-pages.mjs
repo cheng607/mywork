@@ -36,6 +36,8 @@ html = html.replace('<head>', '<head>\n  <base href="/mywork/">');
 const modelPath = path.join(dist, 'assets', 'models', 'cheng607-mascot.glb');
 if (fs.existsSync(modelPath)) {
   html = html.replace(/data-glb-bytes="\d+"/, `data-glb-bytes="${fs.statSync(modelPath).size}"`);
+  const modelVersion = createHash('sha256').update(fs.readFileSync(modelPath)).digest('hex').slice(0, 12);
+  html = html.replace('data-glb-src="assets/models/cheng607-mascot.glb"', `data-glb-src="assets/models/cheng607-mascot.glb?v=${modelVersion}"`);
 }
 for (const name of ['styles.css', 'script.js', 'mascot.js']) {
   const version = createHash('sha256').update(fs.readFileSync(path.join(dist, name))).digest('hex').slice(0, 12);

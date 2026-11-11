@@ -36,6 +36,10 @@ if (stage && homeArt) {
   let modelVisible = true;
   let motionTime = 0;
   let gestureStarted = 0;
+  let waveUpperArm = null;
+  let waveForeArm = null;
+  let motionAxis = null;
+  let motionQuaternion = null;
 
   function say(text) {
     if (message && message.textContent !== text) message.textContent = text;
@@ -221,6 +225,14 @@ if (stage && homeArt) {
       modelPivot = new THREE.Group();
       modelPivot.add(model);
       scene.add(modelPivot);
+      model.traverse((object) => {
+        if (!object.isBone) return;
+        const name = object.name.replace(/[^a-z]/gi, '').toLowerCase();
+        if (name.endsWith('rightarm')) waveUpperArm = object;
+        if (name.endsWith('rightforearm')) waveForeArm = object;
+      });
+      motionAxis = new THREE.Vector3(1, 0, 0);
+      motionQuaternion = new THREE.Quaternion();
 
       if (gltf.animations.length) {
         mixer = new THREE.AnimationMixer(model);
@@ -279,6 +291,19 @@ if (stage && homeArt) {
     lastFrameTime = time;
     motionTime += delta;
     mixer?.update(delta);
+    if (mixer && waveUpperArm && motionQuaternion && ['wave', 'present'].includes(currentAction) && !modelActions.has(currentAction)) {
+      const age = motionTime - gestureStarted;
+      const duration = currentAction === 'wave' ? 6 : 3;
+      if (age >= 0 && age < duration) {
+        const blend = Math.min(1, age / 0.5, (duration - age) / 0.8);
+        const upperAngle = currentAction === 'wave' ? -2.0 : -1.15;
+        waveUpperArm.quaternion.multiply(motionQuaternion.setFromAxisAngle(motionAxis, upperAngle * blend));
+        if (waveForeArm) {
+          const foreAngle = currentAction === 'wave' ? -0.65 + 0.35 * Math.sin(Math.max(0, age - 0.5) * 7) : -0.25;
+          waveForeArm.quaternion.multiply(motionQuaternion.setFromAxisAngle(motionAxis, foreAngle * blend));
+        }
+      }
+    }
     if (modelPivot) {
       const gestureAge = motionTime - gestureStarted;
       const gesture = gestureAge < 1.4 ? Math.sin(Math.PI * gestureAge / 1.4) : 0;
