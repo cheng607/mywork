@@ -11,6 +11,7 @@ const copy = (name) => fs.cpSync(path.join(root, name), path.join(dist, name), {
 for (const name of ['index.html', 'styles.css', 'script.js', 'mascot.js']) copy(name);
 fs.mkdirSync(path.join(dist, 'assets'), { recursive: true });
 for (const name of ['blog-screenshot.png', 'tripbeam-screenshot.png', 'cheng607-mascot-poster.png']) copy(path.join('assets', name));
+copy(path.join('assets', 'scenes'));
 copy(path.join('assets', 'models'));
 fs.mkdirSync(path.join(dist, 'orbit-engine', 'assets'), { recursive: true });
 for (const name of [

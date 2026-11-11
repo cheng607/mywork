@@ -8,6 +8,17 @@ if (stage && homeArt) {
   const minimizeButton = stage.querySelector('[data-mascot-minimize]');
   const sections = [...document.querySelectorAll('[data-mascot-section]')];
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const sceneStorageKey = 'cheng607-portfolio-scene';
+  const savedScene = (() => {
+    try {
+      const name = localStorage.getItem(sceneStorageKey);
+      return ['home', 'gaming', 'dining'].includes(name) ? name : 'home';
+    } catch { return 'home'; }
+  })();
+
+  // Let the renderer use the whole scene viewport while the figure button stays a
+  // smaller, accessible hit target over the character.
+  if (canvas) stage.append(canvas);
 
   const sectionPrompts = {
     home: { action: 'wave', text: '你好，我是 Cheng。来看看我做的项目吧。' },
@@ -38,24 +49,125 @@ if (stage && homeArt) {
   let gestureStarted = 0;
   let waveUpperArm = null;
   let waveForeArm = null;
-  let motionAxis = null;
-  let motionQuaternion = null;
+  let THREEEngine = null;
+  let activeScene = savedScene;
+  let sceneTransitionAction = null;
+  let proceduralBoneBases = new Map();
+
+  const scenePrompts = {
+    home: { text: '在家放松一下，再继续把想法做出来。' },
+    gaming: { text: '坐下来开一局，灵感也许就在下一关。' },
+    dining: { text: '坐下来好好吃饭，补充能量再继续。' },
+  };
+
+  function selectScene(name) {
+    if (!scenePrompts[name] || name === activeScene) return;
+    const previousScene = activeScene;
+    activeScene = name;
+    try { localStorage.setItem(sceneStorageKey, name); } catch { /* Storage can be unavailable in private contexts. */ }
+    stage.dataset.mascotScene = name;
+    stage.querySelectorAll('[data-scene-select]').forEach((button) => {
+      const selected = button.dataset.sceneSelect === name;
+      button.setAttribute('aria-pressed', String(selected));
+    });
+    const prompt = name === 'home'
+      ? (sectionPrompts[activeSection] || sectionPrompts.home)
+      : { action: 'idle', text: scenePrompts[name].text };
+    setAction(prompt.action, prompt.text);
+    playSceneForSelection(previousScene, name);
+    if (!prefersReducedMotion.matches) startRenderLoop();
+    renderOnce();
+  }
+
+  function restoreProceduralBonePose() {
+    for (const [bone, quaternion] of proceduralBoneBases) bone.quaternion.copy(quaternion);
+    proceduralBoneBases.clear();
+  }
+
+  function addPoseRotation(bone, x, y, z, weight) {
+    if (!bone || (!x && !y && !z) || weight <= 0) return;
+    if (!proceduralBoneBases.has(bone)) proceduralBoneBases.set(bone, bone.quaternion.clone());
+    const offset = new THREEEngine.Quaternion().setFromEuler(new THREEEngine.Euler(x * weight, y * weight, z * weight, 'XYZ'));
+    bone.quaternion.multiply(offset);
+  }
 
   function say(text) {
     if (message && message.textContent !== text) message.textContent = text;
   }
 
-  function playModelAction(name) {
-    const action = modelActions.get(name) || modelActions.get('idle');
-    if (action === activeModelAction) return;
-    const previous = activeModelAction;
-    if (previous) previous.fadeOut(0.2);
-    if (!action) {
-      activeModelAction = null;
+  function playAction(action, { loop = false, fade = 0.22, staticPose = false } = {}) {
+    if (!action || !mixer) return;
+    if (activeModelAction === action) {
+      if (staticPose) {
+        action.paused = true;
+        mixer.update(0);
+      }
       return;
     }
-    action.reset().fadeIn(0.2).play();
+    if (activeModelAction) activeModelAction.fadeOut(fade);
+    action.reset();
+    action.enabled = true;
+    action.setLoop(loop ? THREEEngine.LoopRepeat : THREEEngine.LoopOnce, loop ? Infinity : 1);
+    action.clampWhenFinished = !loop;
+    action.paused = false;
+    action.fadeIn(fade).play();
     activeModelAction = action;
+    if (staticPose) {
+      action.time = loop ? action.getClip().duration * 0.28 : action.getClip().duration;
+      action.paused = true;
+      mixer.update(0);
+    }
+  }
+
+  function playModelAction(name, staticPose = false) {
+    sceneTransitionAction = null;
+    playAction(modelActions.get(name) || modelActions.get('idle'), { loop: true, staticPose });
+  }
+
+  function playSceneLoop(name, staticPose = false) {
+    const actionName = name === 'gaming' ? 'sceneGaming' : 'sceneDining';
+    sceneTransitionAction = null;
+    playAction(modelActions.get(actionName) || modelActions.get('idle'), { loop: true, fade: 0.28, staticPose });
+  }
+
+  function playSceneTransition(name, targetScene) {
+    const action = modelActions.get(name);
+    if (!action || prefersReducedMotion.matches) {
+      if (targetScene === 'home') {
+        const prompt = sectionPrompts[activeSection] || sectionPrompts.home;
+        playModelAction(prompt.action, prefersReducedMotion.matches);
+      } else playSceneLoop(targetScene, prefersReducedMotion.matches);
+      return;
+    }
+    sceneTransitionAction = action;
+    playAction(action, { loop: false, fade: 0.28 });
+    if (action._portfolioFinishedHandler) mixer.removeEventListener('finished', action._portfolioFinishedHandler);
+    action._portfolioFinishedHandler = (event) => {
+      if (event.action !== action) return;
+      mixer.removeEventListener('finished', action._portfolioFinishedHandler);
+      if (sceneTransitionAction !== action) return;
+      sceneTransitionAction = null;
+      if (targetScene === 'home') {
+        const prompt = sectionPrompts[activeSection] || sectionPrompts.home;
+        playModelAction(prompt.action);
+      } else playSceneLoop(activeScene);
+    };
+    mixer.addEventListener('finished', action._portfolioFinishedHandler);
+  }
+
+  function playSceneForSelection(previousScene, nextScene) {
+    if (!modelLoaded) return;
+    if (nextScene === 'home') {
+      if (previousScene !== 'home') playSceneTransition('sceneStandUp', 'home');
+      else {
+        const prompt = sectionPrompts[activeSection] || sectionPrompts.home;
+        playModelAction(prompt.action, prefersReducedMotion.matches);
+      }
+    } else if (previousScene === 'home') {
+      playSceneTransition('sceneSitDown', nextScene);
+    } else {
+      playSceneLoop(nextScene, prefersReducedMotion.matches);
+    }
   }
 
   function setAction(name, text) {
@@ -67,12 +179,16 @@ if (stage && homeArt) {
       stage.classList.add(`action-${name}`);
     }
     if (text) say(text);
-    playModelAction(name);
+    playModelAction(name, prefersReducedMotion.matches);
   }
 
   function enterSection(name) {
     if (!sectionPrompts[name] || activeSection === name) return;
     activeSection = name;
+    if (activeScene !== 'home') {
+      setAction('idle', scenePrompts[activeScene].text);
+      return;
+    }
     const prompt = sectionPrompts[name];
     setAction(prompt.action, prompt.text);
   }
@@ -116,6 +232,10 @@ if (stage && homeArt) {
   }
 
   function restartCurrentAction() {
+    if (activeScene !== 'home') {
+      setAction('idle', scenePrompts[activeScene].text);
+      return;
+    }
     const prompt = sectionPrompts[activeSection] || sectionPrompts.home;
     const text = activeSection === 'work' && projectPrompts[lastProject]
       ? projectPrompts[lastProject]
@@ -125,6 +245,11 @@ if (stage && homeArt) {
 
   stage.querySelectorAll('[data-mascot-replay]').forEach((button) => {
     button.addEventListener('click', restartCurrentAction);
+  });
+
+  stage.querySelectorAll('[data-scene-select]').forEach((button) => {
+    button.setAttribute('aria-pressed', String(button.dataset.sceneSelect === activeScene));
+    button.addEventListener('click', () => selectScene(button.dataset.sceneSelect));
   });
 
   minimizeButton?.addEventListener('click', () => {
@@ -138,16 +263,21 @@ if (stage && homeArt) {
     const slug = event.detail?.slug;
     if (!slug || slug === lastProject) return;
     lastProject = slug;
-    if (activeSection === 'work' && projectPrompts[slug]) {
+    if (activeSection === 'work' && projectPrompts[slug] && activeScene === 'home') {
       setAction('present', projectPrompts[slug]);
+    } else if (activeScene !== 'home') {
+      setAction('idle', scenePrompts[activeScene].text);
     }
   });
 
   prefersReducedMotion.addEventListener?.('change', () => {
     if (prefersReducedMotion.matches) {
       stage.classList.remove('action-idle', 'action-wave', 'action-present', 'action-think');
+      if (activeScene === 'home') playModelAction(currentAction, true);
+      else playSceneLoop(activeScene, true);
     } else {
       stage.classList.add(`action-${currentAction}`);
+      if (activeModelAction) activeModelAction.paused = false;
     }
     if (prefersReducedMotion.matches && modelPivot) {
       modelPivot.rotation.set(0, 0, 0);
@@ -175,6 +305,7 @@ if (stage && homeArt) {
         import('three/addons/loaders/GLTFLoader.js'),
         import('three/addons/loaders/DRACOLoader.js'),
       ]);
+      THREEEngine = THREE;
 
       renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
@@ -182,6 +313,7 @@ if (stage && homeArt) {
       renderer.setClearColor(0x000000, 0);
 
       scene = new THREE.Scene();
+      scene.background = null;
       camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
       camera.position.set(0, 1.55, 9.2);
       camera.lookAt(0, 1.55, 0);
@@ -193,7 +325,6 @@ if (stage && homeArt) {
       const fillLight = new THREE.DirectionalLight(0xffffff, 0.8);
       fillLight.position.set(4, 3, 5);
       scene.add(fillLight);
-
       const loader = new GLTFLoader();
       const dracoLoader = new DRACOLoader();
       dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/libs/draco/');
@@ -236,9 +367,6 @@ if (stage && homeArt) {
         if (name.endsWith('rightarm')) waveUpperArm = object;
         if (name.endsWith('rightforearm')) waveForeArm = object;
       });
-      motionAxis = new THREE.Vector3(1, 0, 0);
-      motionQuaternion = new THREE.Quaternion();
-
       if (gltf.animations.length) {
         mixer = new THREE.AnimationMixer(model);
         const clipMatches = {
@@ -246,6 +374,10 @@ if (stage && homeArt) {
           wave: /wave|hello|greet/i,
           present: /point|present|show/i,
           think: /think|ponder/i,
+          sceneSitDown: /scene[_ -]?sit[_ -]?down/i,
+          sceneStandUp: /scene[_ -]?stand[_ -]?up/i,
+          sceneGaming: /scene[_ -]?(gaming|game)[_ -]?(play|idle)?/i,
+          sceneDining: /scene[_ -]?(dining|eat)[_ -]?(eat|idle)?/i,
         };
         for (const [name, pattern] of Object.entries(clipMatches)) {
           const clip = gltf.animations.find((candidate) => pattern.test(candidate.name));
@@ -257,6 +389,8 @@ if (stage && homeArt) {
       modelLoaded = true;
       stage.classList.add('has-model');
       resizeRenderer();
+      if (activeScene !== 'home') playSceneLoop(activeScene, prefersReducedMotion.matches);
+      else if (prefersReducedMotion.matches) playModelAction(currentAction, true);
       renderOnce();
       startRenderLoop();
     } catch (error) {
@@ -295,17 +429,18 @@ if (stage && homeArt) {
     const delta = lastFrameTime ? Math.min((time - lastFrameTime) / 1000, 0.05) : 0;
     lastFrameTime = time;
     motionTime += delta;
+    restoreProceduralBonePose();
     mixer?.update(delta);
-    if (mixer && waveUpperArm && motionQuaternion && ['wave', 'present'].includes(currentAction) && !modelActions.has(currentAction)) {
+    if (mixer && waveUpperArm && ['wave', 'present'].includes(currentAction) && !modelActions.has(currentAction)) {
       const age = motionTime - gestureStarted;
       const duration = currentAction === 'wave' ? 6 : 3;
       if (age >= 0 && age < duration) {
         const blend = Math.min(1, age / 0.5, (duration - age) / 0.8);
         const upperAngle = currentAction === 'wave' ? -2.0 : -1.15;
-        waveUpperArm.quaternion.multiply(motionQuaternion.setFromAxisAngle(motionAxis, upperAngle * blend));
+        addPoseRotation(waveUpperArm, upperAngle * blend, 0, 0, 1);
         if (waveForeArm) {
           const foreAngle = currentAction === 'wave' ? -0.65 + 0.35 * Math.sin(Math.max(0, age - 0.5) * 7) : -0.25;
-          waveForeArm.quaternion.multiply(motionQuaternion.setFromAxisAngle(motionAxis, foreAngle * blend));
+          addPoseRotation(waveForeArm, foreAngle * blend, 0, 0, 1);
         }
       }
     }
@@ -349,8 +484,12 @@ if (stage && homeArt) {
   window.addEventListener('scroll', updateFromScroll, { passive: true });
   window.addEventListener('resize', updateFromScroll, { passive: true });
 
+  stage.dataset.mascotScene = activeScene;
   homeArt.classList.add('mascot-active');
-  setAction('wave', sectionPrompts.home.text);
+  const initialPrompt = activeScene === 'home'
+    ? sectionPrompts.home
+    : { action: 'idle', text: scenePrompts[activeScene].text };
+  setAction(initialPrompt.action, initialPrompt.text);
   updateFromScroll();
   loadModel();
 }

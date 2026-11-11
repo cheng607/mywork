@@ -34,17 +34,32 @@
 
 /* Portfolio mascot guide */
 .mascot-home-art{isolation:isolate}
-.mascot-home-art.mascot-active .orb,.mascot-home-art.mascot-active .art-ring,.mascot-home-art.mascot-active .art-block{opacity:0;scale:.88;transition:opacity .45s ease,scale .6s ease}
+.mascot-home-art{background-color:#e9e4d9;background-image:none}
+.scene-backdrops{position:absolute;inset:0;z-index:0;overflow:hidden;background:#e9e4d9;pointer-events:none}
+.scene-backdrops img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity .42s ease}
+.mascot-stage[data-mascot-scene="home"] [data-scene-image="home"],.mascot-stage[data-mascot-scene="gaming"] [data-scene-image="gaming"],.mascot-stage[data-mascot-scene="dining"] [data-scene-image="dining"]{opacity:1}
+.scene-foregrounds{position:absolute;inset:0;z-index:3;pointer-events:none}
+.scene-foregrounds img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity .42s ease}
+.mascot-stage[data-mascot-scene="gaming"] [data-scene-foreground="gaming"]{opacity:1;clip-path:inset(72% 0 0)}
+.mascot-stage[data-mascot-scene="dining"] [data-scene-foreground="dining"]{opacity:1;clip-path:inset(75% 0 0)}
+.mascot-home-art.mascot-active .art-grid{display:none}
+.mascot-home-art.mascot-active .orb,.mascot-home-art.mascot-active .art-ring,.mascot-home-art.mascot-active .art-block,.mascot-home-art.mascot-active .art-label,.mascot-home-art.mascot-active .art-cross,.mascot-home-art.mascot-active .art-coordinate{display:none}
 .mascot-stage{position:absolute;inset:0;z-index:4;color:var(--ink);pointer-events:none}
-.mascot-figure{position:absolute;right:3%;top:2%;width:76%;height:94%;padding:0;border:0;background:transparent;cursor:pointer;pointer-events:auto;display:grid;place-items:center;transform-origin:50% 85%;}
+.mascot-figure{position:absolute;right:3%;top:2%;width:76%;height:94%;z-index:2;padding:0;border:0;background:transparent;cursor:pointer;pointer-events:auto;display:grid;place-items:center;transform-origin:50% 85%;}
 .mascot-poster,.mascot-canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 16px 12px #4b332637)}
-.mascot-canvas{display:none}
+.mascot-canvas{display:none;z-index:1;pointer-events:none}
 .mascot-loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:80%;text-align:center;color:#55554d;font:12px/1.6 var(--sans)}
 .mascot-stage.has-model .mascot-loading{display:none}
 .mascot-stage.has-model .mascot-poster{display:none}
 .mascot-stage.has-model .mascot-canvas{display:block}
 .mascot-figure:focus-visible,.mascot-replay:focus-visible,.mascot-minimize:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
 .mascot-caption{position:absolute;left:22px;bottom:23px;width:min(225px,48%);padding:13px 15px 12px;background:#f4f1e9eF;border:1px solid #17181424;box-shadow:0 8px 22px #2a29201a;pointer-events:auto;z-index:5}
+.mascot-scenes{position:absolute;top:16px;left:16px;z-index:6;display:flex;align-items:center;gap:5px;padding:5px;background:#f4f1e9eF;border:1px solid #17181424;box-shadow:0 5px 16px #2a292014;pointer-events:auto}
+.mascot-scenes-label{padding:0 5px;color:var(--muted);font:9px var(--mono)}
+.mascot-scenes button{min-height:30px;padding:0 9px;border:1px solid transparent;background:transparent;color:#62635d;font:11px var(--sans);cursor:pointer;white-space:nowrap}
+.mascot-scenes button:hover{background:#e9e5db;color:var(--ink)}
+.mascot-scenes button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.mascot-scenes button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 .mascot-kicker{font-size:8px;letter-spacing:.12em;color:var(--muted)}
 .mascot-message{font-size:12px;line-height:1.65;margin:7px 0 8px;color:#40413b}
 .mascot-replay{border:0;background:none;padding:0;color:var(--blue);font:11px var(--sans);cursor:pointer}
@@ -56,10 +71,16 @@
 .mascot-stage.is-docked .mascot-caption{left:12px;top:12px;bottom:auto;width:calc(100% - 45px);padding:9px 10px;background:#fffaf2;border-color:#17181418;box-shadow:none}
 .mascot-stage.is-docked .mascot-message{font-size:11px;margin:5px 0 6px}
 .mascot-stage.is-docked .mascot-kicker{font-size:7px}
+.mascot-stage.is-docked .mascot-scenes{top:102px;left:8px;right:8px;justify-content:center;gap:2px;padding:3px}
+.mascot-stage.is-docked .mascot-scenes-label{display:none}
+.mascot-stage.is-docked .mascot-scenes button{min-height:26px;padding:0 7px;font-size:10px}
 .mascot-stage.is-docked .mascot-minimize{top:10px;right:10px;width:25px;height:25px}
 .mascot-stage.is-minimized{width:100px;height:122px;border-radius:54px 54px 4px 4px;background:#f4f1e9f2}
 .mascot-stage.is-minimized .mascot-figure{inset:3px 0 0;width:100%;height:100%}
 .mascot-stage.is-minimized .mascot-caption{display:none}
+.mascot-stage.is-minimized .mascot-scenes{display:none}
+.mascot-stage.is-minimized .scene-backdrops{display:none}
+.mascot-stage.is-minimized .scene-foregrounds{display:none}
 .mascot-stage.is-minimized .mascot-minimize{top:4px;right:4px;width:22px;height:22px;font-size:14px}
 .mascot-stage:not(.is-docked).is-minimized{inset:auto 8px 8px auto;width:96px;height:118px;background:#f4f1e9d9;border:1px solid #17181425;border-radius:54px 54px 4px 4px;box-shadow:0 8px 22px #17181420}
 .mascot-stage:not(.is-docked).is-minimized .mascot-figure{inset:3px 0 0;width:100%;height:100%}
@@ -72,5 +93,5 @@
 @keyframes mascot-present{0%,100%{transform:translateX(0)}50%{transform:translateX(-8px) scale(1.025)}}
 @keyframes mascot-think{0%,100%{transform:translateY(0)}45%{transform:translateY(-6px) rotate(1deg)}}
 @keyframes mascot-idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@media(max-width:700px){.mascot-figure{right:0;width:82%}.mascot-caption{left:12px;bottom:12px;width:53%;padding:9px 10px}.mascot-message{font-size:10px;margin:5px 0 6px}.mascot-kicker{font-size:7px}.mascot-stage.is-docked{inset:auto 12px 12px auto;width:174px;height:210px}.mascot-stage.is-docked .mascot-figure{top:50%;width:74%;height:48%}.mascot-stage.is-minimized{width:78px;height:96px}}
-@media(prefers-reduced-motion:reduce){.mascot-stage,.mascot-stage *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+@media(max-width:700px){.mascot-figure{right:0;width:82%}.mascot-caption{left:12px;bottom:12px;width:53%;padding:9px 10px}.mascot-message{font-size:10px;margin:5px 0 6px}.mascot-kicker{font-size:7px}.mascot-scenes{top:10px;left:10px;gap:2px;padding:3px}.mascot-scenes-label{display:none}.mascot-scenes button{min-height:28px;padding:0 7px;font-size:10px}.mascot-stage.is-docked{inset:auto 12px 12px auto;width:174px;height:210px}.mascot-stage.is-docked .mascot-figure{top:50%;width:74%;height:48%}.mascot-stage.is-docked .mascot-scenes{top:100px;left:5px;right:5px;padding:2px}.mascot-stage.is-docked .mascot-scenes button{padding:0 6px;font-size:9px}.mascot-stage.is-minimized{width:78px;height:96px}}
+@media(prefers-reduced-motion:reduce){.mascot-stage,.mascot-stage *,.mascot-home-art,.scene-backdrops img,.scene-foregrounds img{scroll-behavior:auto!important;transition:none!important;animation:none!important}}

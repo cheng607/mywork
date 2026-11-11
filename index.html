@@ -30,7 +30,16 @@
         <div class="art-grid"></div>
         <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="art-ring"></div><div class="art-block"></div>
         <span class="art-label mono">IDEAS<br>INTO FORM<br>EST. 2025</span><span class="art-cross">✳</span><span class="art-coordinate mono">31°13' N<br>121°28' E</span>
-        <aside class="mascot-stage" id="mascot-stage" data-mascot-stage data-glb-src="assets/models/cheng607-mascot.glb" data-glb-bytes="42010840" aria-label="作品集角色向导">
+        <aside class="mascot-stage" id="mascot-stage" data-mascot-stage data-glb-src="assets/models/cheng607-mascot.glb" data-glb-bytes="42206388" aria-label="作品集角色向导">
+          <div class="scene-backdrops" aria-hidden="true">
+            <img data-scene-image="home" src="assets/scenes/home.webp" alt="" fetchpriority="high" />
+            <img data-scene-image="gaming" src="assets/scenes/gaming.webp" alt="" />
+            <img data-scene-image="dining" src="assets/scenes/dining.webp" alt="" />
+          </div>
+          <div class="scene-foregrounds" aria-hidden="true">
+            <img data-scene-foreground="gaming" src="assets/scenes/gaming.webp" alt="" />
+            <img data-scene-foreground="dining" src="assets/scenes/dining.webp" alt="" />
+          </div>
           <button class="mascot-figure" type="button" data-mascot-replay aria-label="重播角色动作">
             <span class="mascot-loading" data-mascot-loading role="status">正在加载 3D 角色…</span>
             <canvas class="mascot-canvas" data-mascot-canvas aria-hidden="true"></canvas>
@@ -39,6 +48,12 @@
             <span class="mascot-kicker mono">PORTFOLIO GUIDE</span>
             <p class="mascot-message" data-mascot-message aria-live="polite">你好，我是 Cheng。来看看我做的项目吧。</p>
             <button class="mascot-replay" type="button" data-mascot-replay>↻ 再看一次</button>
+          </div>
+          <div class="mascot-scenes" role="group" aria-label="切换角色场景">
+            <span class="mascot-scenes-label">场景</span>
+            <button type="button" data-scene-select="home" aria-pressed="true">家里</button>
+            <button type="button" data-scene-select="gaming" aria-pressed="false">游戏</button>
+            <button type="button" data-scene-select="dining" aria-pressed="false">用餐</button>
           </div>
           <button class="mascot-minimize" type="button" data-mascot-minimize aria-label="收起角色助手" aria-expanded="true">−</button>
         </aside>
