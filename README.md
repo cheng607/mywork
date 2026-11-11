@@ -20,12 +20,12 @@ node scripts/build-pages.mjs
 
 ## 主页角色向导
 
-主页角色会跟随当前板块切换提示和动作，并在滚动离开首屏后收起到右下角。模型加载期间显示下载进度，加载失败时提示刷新重试；发布构建会根据 GLB 的实际大小更新进度基准。
+主页角色保留“家里 / 游戏 / 用餐”三个场景，并在滚动离开首屏后收起到右下角。站立、握手柄和桌边休息使用从同一初始骨架计算的完整姿态，切换时平滑插值；页面板块变化只更新提示，不再打断场景姿态。
 
-角色 GLB 位于 `assets/models/cheng607-mascot.glb`。场景动作由 Blender 制作并嵌入 GLB，再由 Three.js 按场景播放；构建脚本会将模型目录复制到 GitHub Pages 发布目录。模型发布前请确认许可和署名要求。
+页面使用 `assets/models/cheng607-mascot-web.glb`，约 2.0 MB、6.5 万三角面。原始约 42.2 MB、150 万三角面的模型保留为源文件，不进入发布包。轻量模型移除了夸张的法线/高光贴图与旧动画，压缩颜色贴图，并保留骨架。生成命令见 `assets/models/README.md`。
 
-当前模型由腾讯混元 3D 根据角色概念图生成，并借助 Mixamo 自动绑骨。GLB 包含 `idle`、`scene_sit_down`、`scene_stand_up`、`scene_gaming_play` 和 `scene_dining_eat` 动画片段。页面按场景播放坐下/起身过渡及游戏、用餐循环，保留原 Draco 网格压缩；模型约 42 MB，当前不包含面部表情动画。动作生成命令见 `assets/models/README.md`。
+首屏先显示约 15 KB 的透明角色预览，再切换到实时 3D；加载失败时三个场景仍能显示预览。模型下载与 JS 模块并行加载，不再发起 HEAD 预检。Three.js 和 Draco 解码器随站点发布，其他场景图片按选择加载，项目漫游在接近视口时初始化。角色在隐藏标签页、离开视口或收起时停止动画，支持减少动态效果设置。
 
-主页角色舞台可在“家里 / 游戏 / 用餐”三种预渲染 WebP 背景间切换，透明 Three.js 画布只绘制角色。坐姿和手部活动通过独立 Blender 骨骼片段驱动，页面会在切换场景时交叉淡入对应动作。场景背景位于 `assets/scenes/`，Pages 构建会将其复制到发布目录。
+场景背景位于 `assets/scenes/`，静态角色预览位于 `assets/mascot/`，实时姿态定义位于 `mascot-rig.js`。GitHub Pages 构建会对角色脚本、姿态模块和模型使用内容版本号。
 
 项目截图位于 `assets/`，漫游数据位于 `orbit-engine/content.json`。

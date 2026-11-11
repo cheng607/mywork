@@ -6,9 +6,10 @@
   <meta name="theme-color" content="#f4f1e9" />
   <meta name="description" content="cheng607 的个人作品集 — 独立开发、AI 应用与产品实践。" />
   <title>cheng607 — 个人作品集</title>
+  <link rel="icon" href="orbit-engine/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -30,19 +31,24 @@
         <div class="art-grid"></div>
         <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="art-ring"></div><div class="art-block"></div>
         <span class="art-label mono">IDEAS<br>INTO FORM<br>EST. 2025</span><span class="art-cross">✳</span><span class="art-coordinate mono">31°13' N<br>121°28' E</span>
-        <aside class="mascot-stage" id="mascot-stage" data-mascot-stage data-glb-src="assets/models/cheng607-mascot.glb" data-glb-bytes="42205556" aria-label="作品集角色向导">
+        <aside class="mascot-stage" id="mascot-stage" data-mascot-stage data-glb-src="assets/models/cheng607-mascot-web.glb" aria-label="作品集角色向导">
           <div class="scene-backdrops" aria-hidden="true">
             <img data-scene-image="home" src="assets/scenes/home.webp" alt="" fetchpriority="high" />
-            <img data-scene-image="gaming" src="assets/scenes/gaming.webp" alt="" />
-            <img data-scene-image="dining" src="assets/scenes/dining.webp" alt="" />
+            <img data-scene-image="gaming" data-src="assets/scenes/gaming.webp" alt="" />
+            <img data-scene-image="dining" data-src="assets/scenes/dining.webp" alt="" />
           </div>
           <div class="scene-foregrounds" aria-hidden="true">
-            <img data-scene-foreground="gaming" src="assets/scenes/gaming.webp" alt="" />
-            <img data-scene-foreground="dining" src="assets/scenes/dining.webp" alt="" />
+            <img data-scene-foreground="gaming" data-src="assets/scenes/gaming.webp" alt="" />
+            <img data-scene-foreground="dining" data-src="assets/scenes/dining.webp" alt="" />
           </div>
           <div class="mascot-figure">
-            <span class="mascot-loading" data-mascot-loading role="status">正在加载 3D 角色…</span>
+            <span class="mascot-loading" data-mascot-loading role="status">正在准备互动角色…</span>
             <canvas class="mascot-canvas" data-mascot-canvas aria-hidden="true"></canvas>
+          </div>
+          <div class="mascot-previews" aria-hidden="true">
+            <img data-scene-preview="home" src="assets/mascot/preview-home.webp" alt="" fetchpriority="high" />
+            <img data-scene-preview="gaming" data-src="assets/mascot/preview-gaming.webp" alt="" />
+            <img data-scene-preview="dining" data-src="assets/mascot/preview-dining.webp" alt="" />
           </div>
           <div class="mascot-caption">
             <span class="mascot-kicker mono">PORTFOLIO GUIDE</span>
@@ -80,7 +86,7 @@
   <dialog class="project-dialog" id="project-dialog"><button class="dialog-close" aria-label="关闭详情">×</button><div class="dialog-art"></div><span class="eyebrow mono dialog-meta"></span><h2 class="dialog-title"></h2><p class="dialog-description"></p><div class="dialog-tags"></div><div class="dialog-foot mono">项目细节可继续补充</div></dialog>
   <script src="script.js"></script>
   <script type="importmap">
-    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/"}}
+    {"imports":{"three":"./assets/vendor/three/build/three.module.js","three/addons/":"./assets/vendor/three/examples/jsm/"}}
   </script>
   <script type="module" src="mascot.js"></script>
 </body>

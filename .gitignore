@@ -1,4 +1,5 @@
 dist/
+.cache/
 portfolio-source.zip
 Thumbs.db
 .DS_Store

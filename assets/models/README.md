@@ -1,21 +1,30 @@
 # 3D mascot model
 
-The portfolio loads the textured GLB `cheng607-mascot.glb` from this directory.
+The page loads `cheng607-mascot-web.glb` (about 2.0 MB, 64,998 triangles). The
+original `cheng607-mascot.glb` is retained as an archival source and is not copied
+to the published site.
 
-The current model keeps its original Draco-compressed mesh and textures. Four Blender-authored clips are embedded alongside the original `idle` clip:
+The web build keeps the original character and skeleton, reduces mesh density,
+removes the generated normal/specular maps, and compresses the color atlas as
+JPEG. Its 4K atlas resolution and 16-bit UV quantization preserve small UV islands.
+The old scene animation clips are excluded. `mascot-rig.js` builds complete poses
+from rest transforms using world-space limb directions, then interpolates poses.
+This avoids assuming that left and right Mixamo bones share the same local axes.
 
-- `scene_sit_down` and `scene_stand_up` transition between the standing home pose and the seated scenes.
-- `scene_gaming_play` loops a controller-playing pose.
-- `scene_dining_eat` loops a bite-and-rest motion.
+## Regenerate the web model
 
-## Regenerate the scene clips
-
-Install Blender with its glTF 2.0 importer/exporter enabled, then run from the repository root:
+With Blender 5.2 and its glTF importer/exporter installed, run from the repository
+root:
 
 ```powershell
-blender --background --factory-startup --python scripts/create_mascot_animations.py -- assets/models/cheng607-mascot.glb assets/models/cheng607-mascot.glb
+blender --background --factory-startup --python scripts/optimize_mascot.py
 ```
 
-The script exports a temporary Draco-compressed GLB, then merges only the animation samplers and channels into the original GLB. This keeps the source geometry, materials, textures, and compression intact. The input and output may be the same path.
+The command reads the archival GLB and writes only the web GLB. It does not alter
+the archival model. Static transparent previews in `assets/mascot/` are rendered
+from the web model in its three scene poses. Update those when the model or pose
+layout changes.
 
-This repository is published as a public portfolio. Confirm the model's license and required attribution before distributing it.
+The archival model was generated with Tencent Hunyuan 3D and rigged with Mixamo.
+The historical `create_mascot_animations.py` script is retained for reference;
+its generated clips are no longer used by the page.

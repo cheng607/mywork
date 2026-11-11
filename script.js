@@ -2,8 +2,15 @@ const grid = document.querySelector('#project-grid');
 const frame = document.createElement('iframe');
 frame.className = 'reference-orbit-frame';
 frame.title = '博客与 TripBeam 项目图像漫游';
-frame.src = '/orbit-engine/index.html#image-orbit';
 grid.replaceWith(frame);
+// Native iframe lazy loading starts well below the viewport in some browsers.
+// Defer this second WebGL scene until the project area actually approaches view.
+const orbitVisibility = new IntersectionObserver(entries => {
+  if (!entries.some(entry => entry.isIntersecting)) return;
+  frame.src = 'orbit-engine/index.html#image-orbit';
+  orbitVisibility.disconnect();
+}, { rootMargin: '120px' });
+orbitVisibility.observe(frame);
 frame.addEventListener('load', () => {
   try {
     const frameDoc = frame.contentDocument;
