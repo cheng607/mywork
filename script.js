@@ -38,7 +38,8 @@ frame.addEventListener('load', () => {
         preview.append(link);
       }
       const project = Object.entries(destinations).find(([prefix]) => preview.dataset.imageId.startsWith(prefix));
-      link.hidden = !project;
+      const canvas = preview.querySelector('.orbit-preview-image canvas');
+      link.hidden = !project || canvas?.dataset.status !== 'ready' || canvas.dataset.imageId !== preview.dataset.imageId;
       if (project) {
         if (link.href !== project[1][0]) link.href = project[1][0];
         if (link.textContent !== project[1][1]) link.textContent = project[1][1];
@@ -51,7 +52,7 @@ frame.addEventListener('load', () => {
       }
     };
     new MutationObserver(mountProjectLink).observe(frameDoc.body, {
-      childList: true, subtree: true, attributes: true, attributeFilter: ['data-image-id'],
+      childList: true, subtree: true, attributes: true, attributeFilter: ['data-image-id', 'data-status'],
     });
     mountProjectLink();
   } catch (error) {

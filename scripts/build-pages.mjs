@@ -10,7 +10,7 @@ fs.mkdirSync(dist, { recursive: true });
 const copy = (name) => fs.cpSync(path.join(root, name), path.join(dist, name), { recursive: true });
 for (const name of ['index.html', 'styles.css', 'script.js', 'mascot.js', 'mascot-rig.js']) copy(name);
 fs.mkdirSync(path.join(dist, 'assets'), { recursive: true });
-for (const name of ['blog-screenshot.png', 'tripbeam-screenshot.png', 'moodisland-welcome.png', 'moodisland-home.png', 'moodisland-overview.svg', 'cheng607-mascot-poster.png']) copy(path.join('assets', name));
+for (const name of ['blog-screenshot.png', 'tripbeam-screenshot.png', 'moodisland-welcome.png', 'moodisland-home.png', 'moodisland-overview.png', 'cheng607-mascot-poster.png']) copy(path.join('assets', name));
 copy(path.join('assets', 'scenes'));
 copy(path.join('assets', 'mascot'));
 fs.mkdirSync(path.join(dist, 'assets', 'models'), { recursive: true });

@@ -28,4 +28,4 @@ node scripts/build-pages.mjs
 
 场景背景位于 `assets/scenes/`，静态角色预览位于 `assets/mascot/`，实时姿态定义位于 `mascot-rig.js`。GitHub Pages 构建会对角色脚本、姿态模块和模型使用内容版本号。
 
-项目截图位于 `assets/`，漫游数据位于 `orbit-engine/content.json`。MoodIsland 的环绕卡片保留两张原截图，中间预览使用 `moodisland-overview.svg` 将它们并排展示。
+项目截图位于 `assets/`，漫游数据位于 `orbit-engine/content.json`。MoodIsland 的环绕卡片保留两张原截图，中间预览使用 `moodisland-overview.png` 将它们并排展示；同名 SVG 是可编辑的排版源文件。
