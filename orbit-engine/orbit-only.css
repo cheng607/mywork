@@ -6,4 +6,5 @@ body.orbit-only .image-orbit-section { display: flex !important; position: relat
 body.orbit-only .orbit-stage { position: absolute; inset: 62px 0 0 !important; height: auto !important; min-height: 0 !important; overflow: visible !important; }
 body.orbit-only .orbit-masthead { position: relative; z-index: 3; flex: 0 0 42px; }
 body.orbit-only .orbit-topics { pointer-events: none; }
+body.orbit-only .orbit-preview[data-image-id^="project-moodisland"] { width: min(680px, calc(100vw - 24px)); }
 body.orbit-only header, body.orbit-only footer, body.orbit-only .screen:not(.image-orbit-section), body.orbit-only .skip-link, body.orbit-only .chat-widget, body.orbit-only .scroll-progress { display: none !important; }
