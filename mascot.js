@@ -199,6 +199,7 @@ if (stage && homeArt) {
     const texts = {
       'project-blog': '这是我的个人博客，记录技术实践与日常。',
       'project-tripbeam': '这是 TripBeam，帮你规划城市旅行。',
+      'project-moodisland': '这是 MoodIsland，一个记录心情、回望自己的情绪空间。',
     };
     if (texts[event.detail?.slug]) say(texts[event.detail.slug]);
   });

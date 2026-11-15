@@ -25,7 +25,7 @@
 .contact-foot a{font-size:11px}
 .footer>.mono{font-size:11px}
 .footer>.mono:last-child{font-size:10px}
-.project-live-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:20px}
+.project-live-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
 .project-live-links a{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:14px 18px;border:1px solid var(--line);color:var(--ink);text-decoration:none;transition:background .2s,border-color .2s}
 .project-live-links a:hover{background:#e9e5db;border-color:#b9b4a8}
 .project-live-links span{font:10px var(--mono);letter-spacing:.12em;color:var(--muted)}

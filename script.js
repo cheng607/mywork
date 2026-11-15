@@ -1,7 +1,7 @@
 const grid = document.querySelector('#project-grid');
 const frame = document.createElement('iframe');
 frame.className = 'reference-orbit-frame';
-frame.title = '博客与 TripBeam 项目图像漫游';
+frame.title = '博客、TripBeam 与 MoodIsland 项目图像漫游';
 grid.replaceWith(frame);
 // Native iframe lazy loading starts well below the viewport in some browsers.
 // Defer this second WebGL scene until the project area actually approaches view.
@@ -17,6 +17,7 @@ frame.addEventListener('load', () => {
     const destinations = {
       'project-blog': ['https://www.raincode.top/', '打开个人博客 ↗'],
       'project-tripbeam': ['https://www.raincode.top/tripBeam/', '打开 TripBeam ↗'],
+      'project-moodisland': ['https://github.com/cheng607/MoodIsland', '查看 MoodIsland GitHub ↗'],
     };
     let lastSelectedProject = '';
     const mountProjectLink = () => {
